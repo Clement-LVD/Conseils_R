@@ -1,0 +1,66 @@
+---
+title: "Configuration de Git + GitHub dans RStudio"
+output: html_document
+---
+
+### 1. Vérifier que Git est installé
+
+     git --version
+
+Sinon : installer depuis https://git-scm.com
+
+## Installer git
+
+Windows : Git for Windows
+
+macOS : souvent déjà installé, sinon brew install git
+
+Linux : sudo apt install git ou équivalent
+
+## configurer 
+
+git config --global user.name "Prénom Nom"
+git config --global user.email "son@email.com"
+
+## creer token 
+Aller sur : https://github.com/settings/tokens
+
+Générer un token (scope repo, workflow, etc.)
+avec les scopes : 
+
+- repo
+- workflow (optionnel si on utilise GitHub Actions)
+
+Copier le token dans un fichier. 
+
+Perso j'utilise le fichier.Renviron 
+j'y fait une entree GITHUB_
+
+(on peut aussi stocker de facon plus sécurisée avec :
+
+    install.packages("gitcreds")
+    gitcreds::gitcreds_set()
+
+## Lier RStudio à Git
+Dans RStudio :
+
+Menu : Tools > Global Options > Git/SVN
+
+Cocher "Enable version control interface for RStudio projects"
+
+Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows par exemple)
+
+### Cloner ou créer un projet Git
+
+- Soit on clône un repo GitHub existant (New Project > Version Control > Git)
+
+- Soit on configure Git sur un projet existant (Project Options > Git)
+
+# bosser avec github
+
+ git status         # voir les changements
+git add .          # ajouter tous les fichiers modifiés
+git commit -m "Message clair"   # créer un commit
+git push           # envoyer au repo GitHub
+git pull           # récupérer les changements du repo
+
