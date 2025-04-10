@@ -21,7 +21,7 @@ jobs:
 
       - name: Render Rmd
         run: |
-          rmarkdown::render("rapport.Rmd", output_format = "html_document")
+          rmarkdown::render("00_config_a_git.Rmd", output_format = "html_document")
         shell: Rscript {0}
 
       - name: Commit result
