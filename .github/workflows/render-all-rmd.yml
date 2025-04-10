@@ -25,8 +25,17 @@ jobs:
       - name: Render all Rmd files in repo root
         run: |
           rmds <- list.files(pattern = "\\.Rmd$")
-          lapply(rmds, rmarkdown::render)
+          print("📄 Fichiers Rmd trouvés :")
+          print(rmds)
+
+          for (r in rmds) {
+            message("🔧 Rendu de ", r)
+            try(rmarkdown::render(r))
+          }
         shell: Rscript {0}
+
+      - name: Show generated files
+        run: ls -lh *.html || echo "❗ Aucun fichier HTML trouvé"
 
       - name: Commit rendered HTML files
         run: |
