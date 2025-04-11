@@ -1,6 +1,9 @@
 ---
 title: "Configuration de Git + GitHub dans RStudio"
-output: html_document
+output:
+  html_document:
+    output_dir: "docs"
+    self_contained: true
 ---
 
 ### I. Installer Git

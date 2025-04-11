@@ -23,18 +23,21 @@ jobs:
         with:
           packages: rmarkdown
 
-      - name: 🛠️ Render all Rmds
+      - name: 🛠️ Render all Rmds from docs/
         run: |
-          rmds <- list.files(pattern = "\\.Rmd$")
+          # Cherche les fichiers .Rmd dans le dossier docs/ et sous-dossiers
+          rmds <- list.files(path = "docs", pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE)
+
           if (length(rmds) == 0) {
             message("⚠️ Aucun fichier .Rmd trouvé.")
             quit("no", status = 0)
           }
 
+          # Render les fichiers Rmd et les placer dans docs/
           for (r in rmds) {
             message("🔧 Rendu de : ", r)
             tryCatch(
-              rmarkdown::render(r),
+              rmarkdown::render(r, output_dir = "docs"),  # Spécifie le dossier docs pour la sortie
               error = function(e) {
                 message("❌ Erreur lors du rendu de ", r, ": ", e$message)
               }
@@ -43,7 +46,7 @@ jobs:
         shell: Rscript {0}
 
       - name: 📂 Lister les fichiers HTML générés
-        run: ls -lh *.html || echo "❗ Aucun fichier HTML trouvé"
+        run: ls -lh docs/*.html || echo "❗ Aucun fichier HTML trouvé"
 
       - name: 🚀 Commit et push HTML (si changements)
         env:
@@ -51,7 +54,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add *.html || true
+          git add docs/*.html || true
 
           if git diff --cached --quiet; then
             echo "✅ Aucun changement à commit."

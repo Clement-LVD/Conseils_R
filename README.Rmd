@@ -21,15 +21,14 @@ Language is French.
 See tips about git.
 
 ```{r echo=FALSE}
-files <- list.files(pattern = "\\.html$", full.names = FALSE)
+files <- list.files(path = "docs", pattern = "\\.html$", full.names = FALSE)
 
 df <- data.frame(
-  Fichier = sprintf("[%s](%s)", files, files),
-  Dernière_modification = format(file.info(files)$mtime, "%Y-%m-%d %H:%M")
+  Fichier = sprintf("[Voir %s](https://ton-utilisateur.github.io/ton-repo/%s)", files, files),
+  Dernière_modification = format(file.info(file.path("docs", files))$mtime, "%Y-%m-%d %H:%M")
 )
 
 knitr::kable(df, format = "markdown")
-
 
 ```
 
