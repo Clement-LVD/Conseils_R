@@ -1,0 +1,19 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Conseils_R
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of Conseils_R is to provide a few tips about some boring R and Rstudio process.
+
+Language is French
