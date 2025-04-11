@@ -21,10 +21,11 @@ Language is French.
 See tips about git.
 
 ```{r echo=FALSE}
+
 files <- list.files(path = "docs", pattern = "\\.html$", full.names = FALSE)
 
 df <- data.frame(
-  Fichier = sprintf("[Voir %s](https://ton-utilisateur.github.io/ton-repo/%s)", files, files),
+  Fichier = sprintf("[Voir %s](https://Clement-LVD.github.io/Conseils_R/docs/%s)", files, files),
   Dernière_modification = format(file.info(file.path("docs", files))$mtime, "%Y-%m-%d %H:%M")
 )
 
