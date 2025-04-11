@@ -1,4 +1,4 @@
-name: render readme and Deploy GitHub Pages
+name: Build and Deploy GitHub Pages
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
 
       - name: 🚀 Commit et push HTML dans docs/
         env:
-          TOKEN: ${{ secrets.GH_ACTION }} 
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Utiliser le token GitHub Actions par défaut
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
