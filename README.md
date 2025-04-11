@@ -4,7 +4,12 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of Conseils_R is to provide a few tips about some boring R and
-Rstudio process.
+This repo provide tips about some boring Rstudio-related process.
 
-Language is French
+Language is French.
+
+See tips about git.
+
+| Fichier                                      | Dernière_modification |
+|:---------------------------------------------|:----------------------|
+| [00_config_a_git.html](00_config_a_git.html) | 2025-04-11 11:37      |
