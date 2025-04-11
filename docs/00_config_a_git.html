@@ -485,14 +485,15 @@ Control &gt; Git)</p></li>
 <ol style="list-style-type: decimal">
 <li><p>On veut dans tous les cas créer un repo sur Github pour
 l’associer à un projet Rstudio</p></li>
-<li><p>Et copier-coller l’adresse SSH du projet sur Github pour la
-reporter dans Rstudio.</p></li>
+<li><p>Et reporter dans Rstudio l’adresse https - ou l’adresse ‘SSH’ si
+une clée ssh est configurée - du projet, visible sur Github ou
+déductible en tant que ‘nom-du-user/repo’.</p></li>
 </ol>
 <div id="initialiser-un-nouveau-projet" class="section level4">
 <h4>Initialiser un nouveau projet</h4>
 <p>Le plus simple pour synchroniser un projet Rstudio et un repo github,
-c’est généralement d’indiquer l’adresse SSH d’un nouveau repo à la
-création d’un nouveau projet Rstudio.</p>
+c’est généralement d’indiquer l’adresse https (ou SSH) d’un nouveau repo
+vierge, à la création d’un nouveau projet Rstudio.</p>
 <p>Donc on commence par créer un repo sur Github.</p>
 <blockquote>
 <p>“Nouveau projet” ==&gt; “Version control” ==&gt; “Git”</p>
@@ -517,6 +518,7 @@ est vide, il faut initialiser l’archive avec :</p>
 <li>via l’interface ‘git’ de Rstudio</li>
 <li>ou encore avec des fonctions de <code>usethis::</code></li>
 </ul>
+<p>Ci-ensuite l’une des possibilités pour initialiser le projet.</p>
 <p><strong>En commandes terminal.</strong> Depuis le projet Rstudio, le
 terminal aura déjà placé le curseur au niveau du répertoire du projet.
 Tu peux donc simplement:</p>
@@ -526,19 +528,9 @@ git add .
 git commit -m &quot;🚀 Initial commit depuis projet local&quot;
 git branch -M main
 git push -u origin main</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Via l’interface Git de RStudio</li>
-</ol>
-<p>Ouvre ton projet dans RStudio</p>
-<p>Menu Tools &gt; Project Options &gt; Git/SVN → clique sur Enable
-version control (si ce n’est pas déjà fait)</p>
-<p>Clique ensuite sur l’onglet Git dans le coin supérieur droit de
-RStudio :</p>
-<p>Clique sur Commit, sélectionne tous les fichiers → bouton Commit</p>
-<p>Clique ensuite sur la petite roue dentée ⚙️ → Shell…</p>
-<p>Dans le shell qui s’ouvre, tape :</p>
-<p>bash Copier Modifier git remote add origin <a href="https://github.com/ton-utilisateur/ton-repo.git" class="uri">https://github.com/ton-utilisateur/ton-repo.git</a> git
-branch -M main git push -u origin main —</p>
+<p>Ici c’est une adresse https au niveau de la commande
+<code>add origin</code>, mais ça peut être une clée ssh.</p>
+<hr />
 <p>Dans RStudio, on devrait donc pouvoir accéder à une interface de
 “contrôle des versions” fonctionnelle =&gt; fenêtre de “commit changes”
 dans laquelle on peut choisir des fichiers, flèches pour “push” vers

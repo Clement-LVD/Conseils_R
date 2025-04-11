@@ -124,10 +124,10 @@ En général :
 
 1. On veut dans tous les cas créer un repo sur Github pour l'associer à un projet Rstudio
 
-2. Et copier-coller l'adresse SSH du projet sur Github pour la reporter dans Rstudio.
+2. Et reporter dans Rstudio l'adresse https - ou l'adresse 'SSH' si une clée ssh est configurée - du projet, visible sur Github ou déductible en tant que 'nom-du-user/repo'.
 
 #### Initialiser un nouveau projet
-Le plus simple pour synchroniser un projet Rstudio et un repo github, c'est généralement d'indiquer l'adresse SSH d'un nouveau repo à la création d'un nouveau projet Rstudio.
+Le plus simple pour synchroniser un projet Rstudio et un repo github, c'est généralement d'indiquer l'adresse https (ou SSH) d'un nouveau repo vierge, à la création d'un nouveau projet Rstudio.
 
 Donc on commence par créer un repo sur Github.
 
@@ -144,6 +144,8 @@ Si le projet est déjà créé sur l'ordinateur mais que le repo github est vide
 - via l'interface 'git' de Rstudio
 - ou encore avec des fonctions de `usethis::`
 
+Ci-ensuite l'une des possibilités pour initialiser le projet.
+
 **En commandes terminal.** Depuis le projet Rstudio, le terminal aura déjà placé le curseur au niveau du répertoire du projet. Tu peux donc simplement:
 
 
@@ -154,26 +156,9 @@ Si le projet est déjà créé sur l'ordinateur mais que le repo github est vide
     git branch -M main
     git push -u origin main
     
-2. Via l’interface Git de RStudio
+Ici c'est une adresse https au niveau de la commande `add origin`, mais ça peut être une clée ssh.
 
-Ouvre ton projet dans RStudio
 
-Menu Tools > Project Options > Git/SVN → clique sur Enable version control (si ce n’est pas déjà fait)
-
-Clique ensuite sur l’onglet Git dans le coin supérieur droit de RStudio :
-
-Clique sur Commit, sélectionne tous les fichiers → bouton Commit
-
-Clique ensuite sur la petite roue dentée ⚙️ → Shell...
-
-Dans le shell qui s’ouvre, tape :
-
-bash
-Copier
-Modifier
-git remote add origin https://github.com/ton-utilisateur/ton-repo.git
-git branch -M main
-git push -u origin main
 ---
 
 Dans RStudio, on devrait donc pouvoir accéder à une interface de "contrôle des versions" fonctionnelle => fenêtre de "commit changes" dans laquelle on peut choisir des fichiers, flèches pour "push" vers Github.
