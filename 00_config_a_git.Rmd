@@ -3,43 +3,87 @@ title: "Configuration de Git + GitHub dans RStudio"
 output: html_document
 ---
 
-### 1. Vérifier que Git est installé
+### Configurer Git pour Rstudio
+
+#### Vérifier que Git est installé
+En console Rstudio : 
+
+     system("git --version")
+     
+Ou en "Terminal" :
 
      git --version
 
 Sinon : installer depuis https://git-scm.com
 
-## Installer git
 
-Windows : Git for Windows
-
-macOS : souvent déjà installé, sinon brew install git
-
-Linux : sudo apt install git ou équivalent
-
-## configurer 
+#### Associer un user et un mail par défaut
+En commandes terminal :
 
 git config --global user.name "Prénom Nom"
 git config --global user.email "son@email.com"
 
-## creer token 
-Aller sur : https://github.com/settings/tokens
+### Configurer un projet
 
-Générer un token (scope repo, workflow, etc.)
-avec les scopes : 
+Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
 
-- repo
+- Soit le token est stocké dans le fichier .Renviron 
+
+- Soit via le *Git credential store*
+
+Donc on va configurer ci-ensuite un token global d'accès aux repos.
+
+#### Creer token 
+
+1. Aller^[Ou alors via les menus : sous la photo de profil cliquer sur "settings" => et ensuite en bas du menu "Developer Settings" => "Personal access tokens"] sur : https://github.com/settings/tokens 
+
+2. Générer un token simple 'personal access token', a minima avec les `scopes` (portées) : 
+- repo (le token permet d'accéder aux repos du user)
 - workflow (optionnel si on utilise GitHub Actions)
 
-Copier le token dans un fichier. 
+3. Copier le token dans un fichier. 
 
-Perso j'utilise le fichier.Renviron 
-j'y fait une entree GITHUB_
+(On peut aussi générer un "Fine grained token" mais il me faut creuser davantage.)
 
-(on peut aussi stocker de facon plus sécurisée avec :
+#### Reporter le token pour Rstudio
+Il y a deux méthodes pour stocker le token du user et pouvoir écrire sur github et donc mettre à jour son travail au fur-et-à-mesure.
 
-    install.packages("gitcreds")
+**Méthode 1.** On peut stocker le token au niveau du fichier .Renviron global (généralement au niveau de "Mes documents" sous Windows avec l'installation R et Rstudio par défaut). 
+
+Pour ouvrir ce fichier :
+
+     usethis::edit_r_environ() 
+
+Et j'y fait une entrée avec le token comme ci-ensuite :
+
+`GITHUB_PAT=ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
+
+Et voilà => on peut redémarrer Rstudio et passer à l'étape suivante de création d'un projet.
+
+**MAIS.** Cette méthode peut empêcher l'accès par défaut de Rstudio au Git credential store, censé reposer sur le magasin de certificats du OS.
+
+Par exemple, `usethis::git_sitrep()` renvoie un warning expliquant que cette 1ère méthode pourrait interférer avec la 2nde, i.e. '`can prevent your PAT from being retrieved from the Git credential store`'.
+
+     usethis::git_sitrep()
+
+
+    [...]
+    ! C:/Users/CLEM/Documents/.Renviron defines the environment variable: GITHUB_PAT
+    ! This can prevent your PAT from being retrieved from the Git credential store.
+    ℹ If you are troubleshooting PAT problems, the root cause may be an old, invalid PAT defined in C:/Users/CLEM/Documents/.Renviron.
+    ℹ For most use cases, it is better to NOT define the PAT in .Renviron.
+    ☐ Call usethis::edit_r_environ() to edit that file.
+    ☐ Then call gitcreds::gitcreds_set() to put the PAT into the Git credential store.
+
+**Méthode 2.** On peut aussi stocker de facon plus sécurisée avec :
+
+    # install.packages("gitcreds")
     gitcreds::gitcreds_set()
+
+S'il y a déjà un "password" (qui correspond en réalité à un token) cette fonction va proposer de les remplacer par d'autres valeurs (option 2). 
+    
+#### Autre méthode
+
 
 ## Lier RStudio à Git
 Dans RStudio :
