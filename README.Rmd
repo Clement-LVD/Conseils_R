@@ -28,7 +28,7 @@ df <- data.frame(
   Fichier = sprintf("[Voir %s](https://Clement-LVD.github.io/Conseils_R/%s)", files, files),
   Dernière_modification = format(file.info(file.path("docs", files))$mtime, "%Y-%m-%d %H:%M")
 )
-
+ 
 knitr::kable(df, format = "markdown")
 
 ```

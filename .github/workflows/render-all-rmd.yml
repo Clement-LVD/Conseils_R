@@ -1,9 +1,9 @@
-name: Build and Deploy GitHub Pages
+name: render readme and Deploy GitHub Pages
 
 on:
   push:
     branches:
-      - "main"  
+      - "main" 
   pull_request:
     branches:
       - "main"
@@ -27,15 +27,14 @@ jobs:
 
       - name: 🛠️ Render README.Rmd to HTML in docs/
         run: |
-          # Rendre README.Rmd en HTML dans le dossier docs
-          rmarkdown::render('README.Rmd', output_dir = 'docs', output_file = 'index.html')
+          Rscript -e "rmarkdown::render('README.Rmd', output_dir = 'docs', output_file = 'index.html')"
 
       - name: 📂 Lister les fichiers HTML générés
         run: ls -lh docs/*.html || echo "❗ Aucun fichier HTML trouvé"
 
       - name: 🚀 Commit et push HTML dans docs/
         env:
-          TOKEN: ${{ secrets.GH_ACTION }}  
+          TOKEN: ${{ secrets.GH_ACTION }} 
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
