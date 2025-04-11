@@ -3,7 +3,7 @@ title: "Configuration de Git + GitHub dans RStudio"
 output: html_document
 ---
 
-### Configurer Git pour Rstudio
+### I. Installer Git
 
 [Si pas encore fait il faut installer Git, sinon passer à l'étape suivante]
 
@@ -18,6 +18,13 @@ Ou en "Terminal" :
 
 Sinon : installer depuis https://git-scm.com
 
+#### Vérifier si Git est bien reconnu dans les options globales de Rstudio
+
+> Menu : Tools > Global Options > **Git/SVN**
+
+Vérifier que "Enable version control interface for RStudio projects" est coché dans le menu global.
+
+Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows par exemple)
 
 #### Associer un user et un mail par défaut
 En commandes terminal :
@@ -26,9 +33,11 @@ En commandes terminal :
 
     git config --global user.email "son@email.com"
 
-### Configurer l'accès de Rstudio {#acces}
+### Configurer l'accès de Rstudio
 
-Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
+À noter : sois on indique un accès https (comme on va le voir ci-ensuite) soit un lien ssh, si on a configuré une clée SSH.
+
+**Pour synchroniser un repo github et un projet Rstudio avec un lien http.** Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
 
 - Soit le token est stocké dans le fichier .Renviron 
 
@@ -36,7 +45,7 @@ Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les 
 
 Donc on va configurer ci-ensuite un token global d'accès aux repos.
 
-#### Creer token 
+#### II. Creer token 
 
 1. Aller^[Ou alors via les menus : sous la photo de profil cliquer sur "settings" => et ensuite en bas du menu "Developer Settings" => "Personal access tokens"] sur : https://github.com/settings/tokens 
 
@@ -46,7 +55,7 @@ Donc on va configurer ci-ensuite un token global d'accès aux repos.
 
 - (On peut aussi générer un "Fine grained token" mais il me faut creuser davantage ce qui change via ce menu)
 
-#### Reporter le token pour Rstudio
+#### III. Reporter le token pour Rstudio
 Il y a deux méthodes pour stocker le token du user et pouvoir écrire sur github et donc mettre à jour son travail au fur-et-à-mesure.
 
 **Méthode 1.** On peut stocker le token au niveau du fichier .Renviron global (généralement au niveau de "Mes documents" sous Windows avec l'installation R et Rstudio par défaut). 
@@ -86,17 +95,21 @@ Par exemple, `usethis::git_sitrep()` renvoie un warning expliquant que cette 1è
 > S'il y a déjà un "password" (qui correspond en réalité à un token) `gitcreds::gitcreds_set()` va proposer de les remplacer par d'autres valeurs => option n° 2. 
 
 > Et tu peux copier-coller le token dans la console donc quand on te le demande, sans guillemets.
+
+À partir de là tu aura accès à certaines commandes :
+
+    usethis::git_push()
+
+Ou encore pour voir le token :
+
+    gitcreds::gitcreds_get()
+
+Et configurer un token ou github
+
+    usethis::create_github_token()
+    usethis::use_github()    
     
-#### Configurer un projet
-
-## Lier RStudio à Git
-Dans RStudio :
-
-Menu : Tools > Global Options > Git/SVN
-
-Cocher "Enable version control interface for RStudio projects"
-
-Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows par exemple)
+## Configurer un projet
 
 ### Cloner ou créer un projet Git
 
@@ -104,14 +117,63 @@ Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows 
 
 - Soit on configure Git sur un projet existant (Project Options > Git)
 
-1. On veut dans tous les cas créer un repo sur github, 
-2. et copier-coller l'adresse SSH ou la reporter dans Rstudio:
+En général :
+
+1. On veut dans tous les cas créer un repo sur Github pour l'associer à un projet Rstudio
+
+2. Et copier-coller l'adresse SSH du projet sur Github pour la reporter dans Rstudio.
+
+#### Initialiser un nouveau projet
+Le plus simple pour synchroniser un projet Rstudio et un repo github, c'est généralement d'indiquer l'adresse SSH d'un nouveau repo à la création d'un nouveau projet Rstudio.
+
+Donc on commence par créer un repo sur Github.
+
+> "Nouveau projet" ==> "Version control" ==> "Git"
+
+**Il faut indiquer l'adresse SSH (!) dans la "Repository url" et éventuellement un nom de projet (nom du dossier que Rstudio va créer) s'il est différent**.
+
+> Il faut suivre ce flux de travail pour "récupérer" un projet pour la 1ere fois sur un nouveau poste, typiquement pour travailler sur plusieurs postes (au moment de la 1ère configuration du 2nd poste), s'insérer dans un travail collaboratif déjà en cours (récupérer le projet pour la 1ère fois), etc.
+
+#### Synchroniser
+Si le projet est déjà créé sur l'ordinateur mais que le repo github est vide, il faut initialiser l'archive avec :
 
 - en commandes terminal, 
-- via l'interface 'git' de Rstudio 
+- via l'interface 'git' de Rstudio
 - ou encore avec des fonctions de `usethis::`
 
+**En commandes terminal.** Depuis le projet Rstudio, le terminal aura déjà placé le curseur au niveau du répertoire du projet. Tu peux donc simplement:
 
+
+    git init
+    git remote add origin https://github.com/ton-utilisateur/ton-repo.git
+    git add .
+    git commit -m "🚀 Initial commit depuis projet local"
+    git branch -M main
+    git push -u origin main
+    
+2. Via l’interface Git de RStudio
+
+Ouvre ton projet dans RStudio
+
+Menu Tools > Project Options > Git/SVN → clique sur Enable version control (si ce n’est pas déjà fait)
+
+Clique ensuite sur l’onglet Git dans le coin supérieur droit de RStudio :
+
+Clique sur Commit, sélectionne tous les fichiers → bouton Commit
+
+Clique ensuite sur la petite roue dentée ⚙️ → Shell...
+
+Dans le shell qui s’ouvre, tape :
+
+bash
+Copier
+Modifier
+git remote add origin https://github.com/ton-utilisateur/ton-repo.git
+git branch -M main
+git push -u origin main
+---
+
+Dans RStudio, on devrait donc pouvoir accéder à une interface de "contrôle des versions" fonctionnelle => fenêtre de "commit changes" dans laquelle on peut choisir des fichiers, flèches pour "push" vers Github.
 
 ### Commandes terminal pour bosser avec github
 
@@ -147,3 +209,13 @@ git add .
 git commit -m "Initial commit"
 etc.
 ]
+
+
+### Github action
+Le token doit souvent être passé directement au niveau d'une action Github. 
+
+Ajouter le token comme secret dans ton dépôt.
+
+> Aller sur le dépôt → Settings → Secrets and variables → Actions → New repository secret
+
+Choisir un nom et coller le token.

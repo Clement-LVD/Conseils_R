@@ -354,8 +354,8 @@ RStudio</h1>
 </div>
 
 
-<div id="configurer-git-pour-rstudio" class="section level3">
-<h3>Configurer Git pour Rstudio</h3>
+<div id="i.-installer-git" class="section level3">
+<h3>I. Installer Git</h3>
 <p>[Si pas encore fait il faut installer Git, sinon passer à l’étape
 suivante]</p>
 <div id="vérifier-que-git-est-installé" class="section level4">
@@ -367,6 +367,17 @@ suivante]</p>
 <pre><code> git --version</code></pre>
 <p>Sinon : installer depuis <a href="https://git-scm.com" class="uri">https://git-scm.com</a></p>
 </div>
+<div id="vérifier-si-git-est-bien-reconnu-dans-les-options-globales-de-rstudio" class="section level4">
+<h4>Vérifier si Git est bien reconnu dans les options globales de
+Rstudio</h4>
+<blockquote>
+<p>Menu : Tools &gt; Global Options &gt; <strong>Git/SVN</strong></p>
+</blockquote>
+<p>Vérifier que “Enable version control interface for RStudio projects”
+est coché dans le menu global.</p>
+<p>Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur
+Windows par exemple)</p>
+</div>
 <div id="associer-un-user-et-un-mail-par-défaut" class="section level4">
 <h4>Associer un user et un mail par défaut</h4>
 <p>En commandes terminal :</p>
@@ -375,18 +386,22 @@ suivante]</p>
 git config --global user.email &quot;son@email.com&quot;</code></pre>
 </div>
 </div>
-<div id="acces" class="section level3">
+<div id="configurer-laccès-de-rstudio" class="section level3">
 <h3>Configurer l’accès de Rstudio</h3>
-<p>Il faut un token (code secret) pour que Rstudio soit capable d’écrire
-dans les repos Github auxquels le user peut accéder.</p>
+<p>À noter : sois on indique un accès https (comme on va le voir
+ci-ensuite) soit un lien ssh, si on a configuré une clée SSH.</p>
+<p><strong>Pour synchroniser un repo github et un projet Rstudio avec un
+lien http.</strong> Il faut un token (code secret) pour que Rstudio soit
+capable d’écrire dans les repos Github auxquels le user peut
+accéder.</p>
 <ul>
 <li><p>Soit le token est stocké dans le fichier .Renviron</p></li>
 <li><p>Soit via le <em>Git credential store</em></p></li>
 </ul>
 <p>Donc on va configurer ci-ensuite un token global d’accès aux
 repos.</p>
-<div id="creer-token" class="section level4">
-<h4>Creer token</h4>
+<div id="ii.-creer-token" class="section level4">
+<h4>II. Creer token</h4>
 <ol style="list-style-type: decimal">
 <li><p>Aller<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> sur : <a href="https://github.com/settings/tokens" class="uri">https://github.com/settings/tokens</a></p></li>
 <li><p>Générer un token simple ‘personal access token’, a minima avec
@@ -399,8 +414,8 @@ repos du user) et workflow (si on utilise GitHub Actions).</p></li>
 creuser davantage ce qui change via ce menu)</li>
 </ul>
 </div>
-<div id="reporter-le-token-pour-rstudio" class="section level4">
-<h4>Reporter le token pour Rstudio</h4>
+<div id="iii.-reporter-le-token-pour-rstudio" class="section level4">
+<h4>III. Reporter le token pour Rstudio</h4>
 <p>Il y a deux méthodes pour stocker le token du user et pouvoir écrire
 sur github et donc mettre à jour son travail au fur-et-à-mesure.</p>
 <p><strong>Méthode 1.</strong> On peut stocker le token au niveau du
@@ -447,18 +462,17 @@ d’autres valeurs =&gt; option n° 2.</p>
 <p>Et tu peux copier-coller le token dans la console donc quand on te le
 demande, sans guillemets.</p>
 </blockquote>
+<p>À partir de là tu aura accès à certaines commandes :</p>
+<pre><code>usethis::git_push()</code></pre>
+<p>Ou encore pour voir le token :</p>
+<pre><code>gitcreds::gitcreds_get()</code></pre>
+<p>Et configurer un token ou github</p>
+<pre><code>usethis::create_github_token()
+usethis::use_github()    </code></pre>
 </div>
-<div id="configurer-un-projet" class="section level4">
-<h4>Configurer un projet</h4>
 </div>
-</div>
-<div id="lier-rstudio-à-git" class="section level2">
-<h2>Lier RStudio à Git</h2>
-<p>Dans RStudio :</p>
-<p>Menu : Tools &gt; Global Options &gt; Git/SVN</p>
-<p>Cocher “Enable version control interface for RStudio projects”</p>
-<p>Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur
-Windows par exemple)</p>
+<div id="configurer-un-projet" class="section level2">
+<h2>Configurer un projet</h2>
 <div id="cloner-ou-créer-un-projet-git" class="section level3">
 <h3>Cloner ou créer un projet Git</h3>
 <ul>
@@ -467,15 +481,69 @@ Control &gt; Git)</p></li>
 <li><p>Soit on configure Git sur un projet existant (Project Options
 &gt; Git)</p></li>
 </ul>
+<p>En général :</p>
 <ol style="list-style-type: decimal">
-<li>On veut dans tous les cas créer un repo sur github,</li>
-<li>et copier-coller l’adresse SSH ou la reporter dans Rstudio:</li>
+<li><p>On veut dans tous les cas créer un repo sur Github pour
+l’associer à un projet Rstudio</p></li>
+<li><p>Et copier-coller l’adresse SSH du projet sur Github pour la
+reporter dans Rstudio.</p></li>
 </ol>
+<div id="initialiser-un-nouveau-projet" class="section level4">
+<h4>Initialiser un nouveau projet</h4>
+<p>Le plus simple pour synchroniser un projet Rstudio et un repo github,
+c’est généralement d’indiquer l’adresse SSH d’un nouveau repo à la
+création d’un nouveau projet Rstudio.</p>
+<p>Donc on commence par créer un repo sur Github.</p>
+<blockquote>
+<p>“Nouveau projet” ==&gt; “Version control” ==&gt; “Git”</p>
+</blockquote>
+<p><strong>Il faut indiquer l’adresse SSH (!) dans la “Repository url”
+et éventuellement un nom de projet (nom du dossier que Rstudio va créer)
+s’il est différent</strong>.</p>
+<blockquote>
+<p>Il faut suivre ce flux de travail pour “récupérer” un projet pour la
+1ere fois sur un nouveau poste, typiquement pour travailler sur
+plusieurs postes (au moment de la 1ère configuration du 2nd poste),
+s’insérer dans un travail collaboratif déjà en cours (récupérer le
+projet pour la 1ère fois), etc.</p>
+</blockquote>
+</div>
+<div id="synchroniser" class="section level4">
+<h4>Synchroniser</h4>
+<p>Si le projet est déjà créé sur l’ordinateur mais que le repo github
+est vide, il faut initialiser l’archive avec :</p>
 <ul>
 <li>en commandes terminal,</li>
 <li>via l’interface ‘git’ de Rstudio</li>
 <li>ou encore avec des fonctions de <code>usethis::</code></li>
 </ul>
+<p><strong>En commandes terminal.</strong> Depuis le projet Rstudio, le
+terminal aura déjà placé le curseur au niveau du répertoire du projet.
+Tu peux donc simplement:</p>
+<pre><code>git init
+git remote add origin https://github.com/ton-utilisateur/ton-repo.git
+git add .
+git commit -m &quot;🚀 Initial commit depuis projet local&quot;
+git branch -M main
+git push -u origin main</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Via l’interface Git de RStudio</li>
+</ol>
+<p>Ouvre ton projet dans RStudio</p>
+<p>Menu Tools &gt; Project Options &gt; Git/SVN → clique sur Enable
+version control (si ce n’est pas déjà fait)</p>
+<p>Clique ensuite sur l’onglet Git dans le coin supérieur droit de
+RStudio :</p>
+<p>Clique sur Commit, sélectionne tous les fichiers → bouton Commit</p>
+<p>Clique ensuite sur la petite roue dentée ⚙️ → Shell…</p>
+<p>Dans le shell qui s’ouvre, tape :</p>
+<p>bash Copier Modifier git remote add origin <a href="https://github.com/ton-utilisateur/ton-repo.git" class="uri">https://github.com/ton-utilisateur/ton-repo.git</a> git
+branch -M main git push -u origin main —</p>
+<p>Dans RStudio, on devrait donc pouvoir accéder à une interface de
+“contrôle des versions” fonctionnelle =&gt; fenêtre de “commit changes”
+dans laquelle on peut choisir des fichiers, flèches pour “push” vers
+Github.</p>
+</div>
 </div>
 <div id="commandes-terminal-pour-bosser-avec-github" class="section level3">
 <h3>Commandes terminal pour bosser avec github</h3>
@@ -510,6 +578,17 @@ rm -f .git/index.lock</code></pre>
 <p>[et on recommence : git add . git commit -m “Initial commit”
 etc.]</p>
 </blockquote>
+</div>
+<div id="github-action" class="section level3">
+<h3>Github action</h3>
+<p>Le token doit souvent être passé directement au niveau d’une action
+Github.</p>
+<p>Ajouter le token comme secret dans ton dépôt.</p>
+<blockquote>
+<p>Aller sur le dépôt → Settings → Secrets and variables → Actions → New
+repository secret</p>
+</blockquote>
+<p>Choisir un nom et coller le token.</p>
 </div>
 </div>
 <div class="footnotes footnotes-end-of-document">
