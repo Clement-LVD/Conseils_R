@@ -5,6 +5,8 @@ output: html_document
 
 ### Configurer Git pour Rstudio
 
+[Si pas encore fait il faut installer Git, sinon passer à l'étape suivante]
+
 #### Vérifier que Git est installé
 En console Rstudio : 
 
@@ -20,10 +22,11 @@ Sinon : installer depuis https://git-scm.com
 #### Associer un user et un mail par défaut
 En commandes terminal :
 
-git config --global user.name "Prénom Nom"
-git config --global user.email "son@email.com"
+    git config --global user.name "Prénom Nom"
 
-### Configurer un projet
+    git config --global user.email "son@email.com"
+
+### Configurer l'accès de Rstudio {#acces}
 
 Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
 
@@ -37,13 +40,11 @@ Donc on va configurer ci-ensuite un token global d'accès aux repos.
 
 1. Aller^[Ou alors via les menus : sous la photo de profil cliquer sur "settings" => et ensuite en bas du menu "Developer Settings" => "Personal access tokens"] sur : https://github.com/settings/tokens 
 
-2. Générer un token simple 'personal access token', a minima avec les `scopes` (portées) : 
-- repo (le token permet d'accéder aux repos du user)
-- workflow (optionnel si on utilise GitHub Actions)
+2. Générer un token simple 'personal access token', a minima avec les `scopes` (portées) repo (le token permet d'accéder aux repos du user) et workflow (si on utilise GitHub Actions).
 
 3. Copier le token dans un fichier. 
 
-(On peut aussi générer un "Fine grained token" mais il me faut creuser davantage.)
+- (On peut aussi générer un "Fine grained token" mais il me faut creuser davantage ce qui change via ce menu)
 
 #### Reporter le token pour Rstudio
 Il y a deux méthodes pour stocker le token du user et pouvoir écrire sur github et donc mettre à jour son travail au fur-et-à-mesure.
@@ -58,7 +59,7 @@ Et j'y fait une entrée avec le token comme ci-ensuite :
 
 `GITHUB_PAT=ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
 
-Et voilà => on peut redémarrer Rstudio et passer à l'étape suivante de création d'un projet.
+On peut redémarrer Rstudio et passer aux étapes de création d'un projet.
 
 **MAIS.** Cette méthode peut empêcher l'accès par défaut de Rstudio au Git credential store, censé reposer sur le magasin de certificats du OS.
 
@@ -75,15 +76,18 @@ Par exemple, `usethis::git_sitrep()` renvoie un warning expliquant que cette 1è
     ☐ Call usethis::edit_r_environ() to edit that file.
     ☐ Then call gitcreds::gitcreds_set() to put the PAT into the Git credential store.
 
-**Méthode 2.** On peut aussi stocker de facon plus sécurisée avec :
+**Méthode 2.** Comme le suggère usethis::git_sitrep(), on peut aussi stocker de facon plus sécurisée le token avec :
 
     # install.packages("gitcreds")
     gitcreds::gitcreds_set()
 
-S'il y a déjà un "password" (qui correspond en réalité à un token) cette fonction va proposer de les remplacer par d'autres valeurs (option 2). 
-    
-#### Autre méthode
+- S'il y a déjà un token reporté dans le .Renviron, il faut **supprimer** la ligne du .Renviron avec le token (`usethis::edit_r_environ()` pour ouvrir ce fichier .Renviron).
 
+> S'il y a déjà un "password" (qui correspond en réalité à un token) `gitcreds::gitcreds_set()` va proposer de les remplacer par d'autres valeurs => option n° 2. 
+
+> Et tu peux copier-coller le token dans la console donc quand on te le demande, sans guillemets.
+    
+#### Configurer un projet
 
 ## Lier RStudio à Git
 Dans RStudio :
@@ -100,11 +104,46 @@ Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows 
 
 - Soit on configure Git sur un projet existant (Project Options > Git)
 
-# bosser avec github
+1. On veut dans tous les cas créer un repo sur github, 
+2. et copier-coller l'adresse SSH ou la reporter dans Rstudio:
 
- git status         # voir les changements
-git add .          # ajouter tous les fichiers modifiés
-git commit -m "Message clair"   # créer un commit
-git push           # envoyer au repo GitHub
-git pull           # récupérer les changements du repo
+- en commandes terminal, 
+- via l'interface 'git' de Rstudio 
+- ou encore avec des fonctions de `usethis::`
 
+
+
+### Commandes terminal pour bosser avec github
+
+- git status         # voir les changements
+- git add .          # ajouter tous les fichiers modifiés
+- git commit -m "Message clair"   # créer un commit
+- git push           # envoyer au repo GitHub
+- git pull           # récupérer les changements du repo
+
+### Git tricks and treats
+Parfois l'archive .git plante dès les premières étapes de "add" des fichiers dans l'archive. 
+
+Il faut supprimer le fichier index.lock avec une commande terminal.
+ 
+    rm -f .git/index.lock
+
+E.g., de message d'erreur qui nécessite de supprimer ce fichier.
+
+    git add .
+    fatal: Unable to create 'C:/Users/CLEM/Documents/PROJETS_EN_R/financr/.git/index.lock': File exists.
+
+     Another git process seems to be running in this repository, e.g.
+     an editor opened by 'git commit'. Please make sure all processes
+     are terminated then try again. If it still fails, a git process
+     may have crashed in this repository earlier:
+     remove the file manually to continue.
+
+    CLEM@DELL MINGW64 ~/Documents/PROJETS_EN_R/financr (main)
+    rm -f .git/index.lock
+
+> [et on recommence :
+git add .
+git commit -m "Initial commit"
+etc.
+]

@@ -356,6 +356,8 @@ RStudio</h1>
 
 <div id="configurer-git-pour-rstudio" class="section level3">
 <h3>Configurer Git pour Rstudio</h3>
+<p>[Si pas encore fait il faut installer Git, sinon passer à l’étape
+suivante]</p>
 <div id="vérifier-que-git-est-installé" class="section level4">
 <h4>Vérifier que Git est installé</h4>
 <p>En console Rstudio :</p>
@@ -368,12 +370,13 @@ RStudio</h1>
 <div id="associer-un-user-et-un-mail-par-défaut" class="section level4">
 <h4>Associer un user et un mail par défaut</h4>
 <p>En commandes terminal :</p>
-<p>git config –global user.name “Prénom Nom” git config –global
-user.email “<a href="mailto:son@email.com" class="email">son@email.com</a>”</p>
+<pre><code>git config --global user.name &quot;Prénom Nom&quot;
+
+git config --global user.email &quot;son@email.com&quot;</code></pre>
 </div>
 </div>
-<div id="configurer-un-projet" class="section level3">
-<h3>Configurer un projet</h3>
+<div id="acces" class="section level3">
+<h3>Configurer l’accès de Rstudio</h3>
 <p>Il faut un token (code secret) pour que Rstudio soit capable d’écrire
 dans les repos Github auxquels le user peut accéder.</p>
 <ul>
@@ -387,17 +390,14 @@ repos.</p>
 <ol style="list-style-type: decimal">
 <li><p>Aller<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> sur : <a href="https://github.com/settings/tokens" class="uri">https://github.com/settings/tokens</a></p></li>
 <li><p>Générer un token simple ‘personal access token’, a minima avec
-les <code>scopes</code> (portées) :</p></li>
+les <code>scopes</code> (portées) repo (le token permet d’accéder aux
+repos du user) et workflow (si on utilise GitHub Actions).</p></li>
+<li><p>Copier le token dans un fichier.</p></li>
 </ol>
 <ul>
-<li>repo (le token permet d’accéder aux repos du user)</li>
-<li>workflow (optionnel si on utilise GitHub Actions)</li>
+<li>(On peut aussi générer un “Fine grained token” mais il me faut
+creuser davantage ce qui change via ce menu)</li>
 </ul>
-<ol start="3" style="list-style-type: decimal">
-<li>Copier le token dans un fichier.</li>
-</ol>
-<p>(On peut aussi générer un “Fine grained token” mais il me faut
-creuser davantage.)</p>
 </div>
 <div id="reporter-le-token-pour-rstudio" class="section level4">
 <h4>Reporter le token pour Rstudio</h4>
@@ -410,14 +410,14 @@ Windows avec l’installation R et Rstudio par défaut).</p>
 <pre><code> usethis::edit_r_environ() </code></pre>
 <p>Et j’y fait une entrée avec le token comme ci-ensuite :</p>
 <p><code>GITHUB_PAT=ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</code></p>
-<p>Et voilà =&gt; on peut redémarrer Rstudio et passer à l’étape
-suivante de création d’un projet.</p>
+<p>On peut redémarrer Rstudio et passer aux étapes de création d’un
+projet.</p>
 <p><strong>MAIS.</strong> Cette méthode peut empêcher l’accès par défaut
 de Rstudio au Git credential store, censé reposer sur le magasin de
 certificats du OS.</p>
 <p>Par exemple, <code>usethis::git_sitrep()</code> renvoie un warning
-expliquant que cette méthode
-‘<code>can prevent your PAT from being retrieved from the Git credential store</code>’.</p>
+expliquant que cette 1ère méthode pourrait interférer avec la 2nde,
+i.e. ‘<code>can prevent your PAT from being retrieved from the Git credential store</code>’.</p>
 <pre><code> usethis::git_sitrep()
 
 
@@ -428,16 +428,28 @@ expliquant que cette méthode
 ℹ For most use cases, it is better to NOT define the PAT in .Renviron.
 ☐ Call usethis::edit_r_environ() to edit that file.
 ☐ Then call gitcreds::gitcreds_set() to put the PAT into the Git credential store.</code></pre>
-<p><strong>Méthode 2.</strong> On peut aussi stocker de facon plus
-sécurisée avec :</p>
+<p><strong>Méthode 2.</strong> Comme le suggère usethis::git_sitrep(),
+on peut aussi stocker de facon plus sécurisée le token avec :</p>
 <pre><code># install.packages(&quot;gitcreds&quot;)
 gitcreds::gitcreds_set()</code></pre>
+<ul>
+<li>S’il y a déjà un token reporté dans le .Renviron, il faut
+<strong>supprimer</strong> la ligne du .Renviron avec le token
+(<code>usethis::edit_r_environ()</code> pour ouvrir ce fichier
+.Renviron).</li>
+</ul>
+<blockquote>
 <p>S’il y a déjà un “password” (qui correspond en réalité à un token)
-cette fonction va proposer de les remplacer par d’autres valeurs (option
-2).</p>
+<code>gitcreds::gitcreds_set()</code> va proposer de les remplacer par
+d’autres valeurs =&gt; option n° 2.</p>
+</blockquote>
+<blockquote>
+<p>Et tu peux copier-coller le token dans la console donc quand on te le
+demande, sans guillemets.</p>
+</blockquote>
 </div>
-<div id="autre-méthode" class="section level4">
-<h4>Autre méthode</h4>
+<div id="configurer-un-projet" class="section level4">
+<h4>Configurer un projet</h4>
 </div>
 </div>
 <div id="lier-rstudio-à-git" class="section level2">
@@ -455,14 +467,50 @@ Control &gt; Git)</p></li>
 <li><p>Soit on configure Git sur un projet existant (Project Options
 &gt; Git)</p></li>
 </ul>
+<ol style="list-style-type: decimal">
+<li>On veut dans tous les cas créer un repo sur github,</li>
+<li>et copier-coller l’adresse SSH ou la reporter dans Rstudio:</li>
+</ol>
+<ul>
+<li>en commandes terminal,</li>
+<li>via l’interface ‘git’ de Rstudio</li>
+<li>ou encore avec des fonctions de <code>usethis::</code></li>
+</ul>
 </div>
+<div id="commandes-terminal-pour-bosser-avec-github" class="section level3">
+<h3>Commandes terminal pour bosser avec github</h3>
+<ul>
+<li>git status # voir les changements</li>
+<li>git add . # ajouter tous les fichiers modifiés</li>
+<li>git commit -m “Message clair” # créer un commit</li>
+<li>git push # envoyer au repo GitHub</li>
+<li>git pull # récupérer les changements du repo</li>
+</ul>
 </div>
-<div id="bosser-avec-github" class="section level1">
-<h1>bosser avec github</h1>
-<p>git status # voir les changements git add . # ajouter tous les
-fichiers modifiés git commit -m “Message clair” # créer un commit git
-push # envoyer au repo GitHub git pull # récupérer les changements du
-repo</p>
+<div id="git-tricks-and-treats" class="section level3">
+<h3>Git tricks and treats</h3>
+<p>Parfois l’archive .git plante dès les premières étapes de “add” des
+fichiers dans l’archive.</p>
+<p>Il faut supprimer le fichier index.lock avec une commande
+terminal.</p>
+<pre><code>rm -f .git/index.lock</code></pre>
+<p>E.g., de message d’erreur qui nécessite de supprimer ce fichier.</p>
+<pre><code>git add .
+fatal: Unable to create &#39;C:/Users/CLEM/Documents/PROJETS_EN_R/financr/.git/index.lock&#39;: File exists.
+
+ Another git process seems to be running in this repository, e.g.
+ an editor opened by &#39;git commit&#39;. Please make sure all processes
+ are terminated then try again. If it still fails, a git process
+ may have crashed in this repository earlier:
+ remove the file manually to continue.
+
+CLEM@DELL MINGW64 ~/Documents/PROJETS_EN_R/financr (main)
+rm -f .git/index.lock</code></pre>
+<blockquote>
+<p>[et on recommence : git add . git commit -m “Initial commit”
+etc.]</p>
+</blockquote>
+</div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
