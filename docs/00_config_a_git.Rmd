@@ -38,7 +38,7 @@ En commandes terminal :
 
 ### Configurer l'accès de Rstudio
 
-À noter : sois on indique un accès https (comme on va le voir ci-ensuite) soit un lien ssh, si on a configuré une clée SSH. 
+À noter : soit on indique un accès https (comme on va le voir ci-ensuite) soit un lien ssh, si on a configuré une clée SSH. 
 
 **Pour synchroniser un repo github et un projet Rstudio avec un lien http.** Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
 
