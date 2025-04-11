@@ -1,10 +1,12 @@
-name: Render all Rmds
+name: Build and Deploy GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"  
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
   workflow_dispatch:
 
 jobs:
@@ -23,34 +25,17 @@ jobs:
         with:
           packages: rmarkdown
 
-      - name: 🛠️ Render all Rmds from docs/
+      - name: 🛠️ Render README.Rmd to HTML in docs/
         run: |
-          # Cherche les fichiers .Rmd dans le dossier docs/ et sous-dossiers
-          rmds <- list.files(path = "docs", pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE)
-
-          if (length(rmds) == 0) {
-            message("⚠️ Aucun fichier .Rmd trouvé.")
-            quit("no", status = 0)
-          }
-
-          # Render les fichiers Rmd et les placer dans docs/
-          for (r in rmds) {
-            message("🔧 Rendu de : ", r)
-            tryCatch(
-              rmarkdown::render(r, output_dir = "docs"),  # Spécifie le dossier docs pour la sortie
-              error = function(e) {
-                message("❌ Erreur lors du rendu de ", r, ": ", e$message)
-              }
-            )
-          }
-        shell: Rscript {0}
+          # Rendre README.Rmd en HTML dans le dossier docs
+          rmarkdown::render('README.Rmd', output_dir = 'docs', output_file = 'index.html')
 
       - name: 📂 Lister les fichiers HTML générés
         run: ls -lh docs/*.html || echo "❗ Aucun fichier HTML trouvé"
 
-      - name: 🚀 Commit et push HTML (si changements)
+      - name: 🚀 Commit et push HTML dans docs/
         env:
-          TOKEN: ${{ secrets.GH_ACTION }}
+          TOKEN: ${{ secrets.GH_ACTION }}  
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -59,6 +44,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "✅ Aucun changement à commit."
           else
-            git commit -m "📝 Rendered HTML from Rmd files"
+            git commit -m "📝 Generated HTML from README.Rmd"
             git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git HEAD:main
           fi
