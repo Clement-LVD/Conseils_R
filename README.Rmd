@@ -25,7 +25,7 @@ See tips about git.
 files <- list.files(path = "docs", pattern = "\\.html$", full.names = FALSE)
 
 df <- data.frame(
-  Fichier = sprintf("[Voir %s](https://Clement-LVD.github.io/Conseils_R/docs/%s)", files, files),
+  Fichier = sprintf("[Voir %s](https://Clement-LVD.github.io/Conseils_R/%s)", files, files),
   Dernière_modification = format(file.info(file.path("docs", files))$mtime, "%Y-%m-%d %H:%M")
 )
 
