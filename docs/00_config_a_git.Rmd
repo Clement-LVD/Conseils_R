@@ -6,47 +6,59 @@ output:
     self_contained: true
 ---
 
+**Préambule.** Un projet informatique est composé de fichier(s) de codes. 
+
+Les standards du travail collaboratif permettent à plusieurs personnes d'intervenir sur les mêmes fichiers. Pour cela on utilise un service nommé "Git".
+
+En R sous Rstudio, on travaille dans un "projet" : ce "projet" Rstudio est associé à un répertoire, dans lequel il y a tous les fichiers de codes du projet. 
+
+> Il est recommandé d’utiliser systématiquement les projets RStudio. https://book.utilitr.org/03_Fiches_thematiques/Fiche_rprojects.html 
+
+Une notion importante va être éclaircie dans la suite du document :
+
+> Il est recommandé de créer un projet RStudio en clonant un dépôt distant *[un repo Github ou un projet Gitlab]*. https://book.utilitr.org/03_Fiches_thematiques/Fiche_git_utilisation.html
+
+Dans ce document, on va voir comment configurer Git sous Rstudio pour avoir la possibilité de "cloner un dépôt distant".
+
+Le lead-dev va te demander ton nom de profil github et te filer des accès à un projet : la balle est dans ton camp ensuite.
+
 ### I. Installer Git
 
-[Si pas encore fait il faut installer Git, sinon passer à l'étape suivante]
+[Si pas encore fait il faut installer Git, sinon passer à l'étape suivante] 
 
-#### Vérifier que Git est installé
-En console Rstudio : 
+- Installer le programme "Git" depuis https://git-scm.com
+- Pendant l'installation, tu peux tout laisser par défaut et dire "oui à tout"... mais faire des recherches autour des termes que tu ne comprends pas ds les nombreux menus qui s'affichent à l'installation de Git ne serait pas du luxe.
+- Si Rstudio était ouvert : il faut redémarrer Rstudio pour qu'il prenne en compte l'installation de Git.
+
+**Vérifier que Git est installé.** En console Rstudio : 
 
      system("git --version")
-     
-Ou en "Terminal" :
-
-     git --version
 
 Sinon : installer depuis https://git-scm.com
 
-#### Vérifier si Git est bien reconnu dans les options globales de Rstudio
+**Vérifier si Git est bien reconnu dans les options globales de Rstudio.** Dans le menu Rstudio `Tools > Global Options > **Git/SVN**`
 
-> Menu : Tools > Global Options > **Git/SVN**
+Vérifier que "*Enable version control interface for RStudio projects*" est coché dans le menu global, et qu'il y a un chemin vers le git executable.
 
-Vérifier que "Enable version control interface for RStudio projects" est coché dans le menu global.
+Spécifier le chemin vers Git s’il n’est pas détecté (il faut pointer vers le "git.exe" sur Windows).
 
-Spécifier le chemin vers Git s’il n’est pas détecté (git.exe sur Windows par exemple)
+### Configurer Git globalement
 
-#### Associer un user et un mail par défaut
-En commandes terminal :
+**Associer un user et un mail par défaut.** En commandes terminal on peut configurer des options globales de git :
 
     git config --global user.name "Prénom Nom"
 
     git config --global user.email "son@email.com"
 
-### Configurer l'accès de Rstudio
+L'historique des modifications {scruté par le lead-dev'} propose le user.name et aussi le user.email, pour suivre qui fait quoi sur le projet.
 
-À noter : soit on indique un accès https (comme on va le voir ci-ensuite) soit un lien ssh, si on a configuré une clée SSH. 
-
-**Pour synchroniser un repo github et un projet Rstudio avec un lien http.** Il faut un token (code secret) pour que Rstudio soit capable d'écrire dans les repos Github auxquels le user peut accéder. 
+**Indiquer un token à Git et Rstudio.** Il faut un token (code secret) pour que Rstudio soit capable d'*écrire* dans les repos Github auxquels le user peut accéder. De même pour *lire* les repo privés. 
 
 - Soit le token est stocké dans le fichier .Renviron 
 
 - Soit via le *Git credential store* (gitcreds)
 
-Donc on va configurer ci-ensuite un token global d'accès aux repos.
+Donc on veux un token global, pour accéder à tous les repos auxquels l'utilisateur à accès sur Github.
 
 #### II. Creer token 
 
@@ -55,8 +67,6 @@ Donc on va configurer ci-ensuite un token global d'accès aux repos.
 2. Générer un token simple 'personal access token', a minima avec les `scopes` (portées) repo (le token permet d'accéder aux repos du user) et workflow (si on utilise GitHub Actions).
 
 3. Copier le token dans un fichier. 
-
-- (On peut aussi générer un "Fine grained token" mais il me faut creuser davantage ce qui change via ce menu)
 
 #### III. Reporter le token pour Rstudio
 Il y a deux méthodes pour stocker le token du user et pouvoir écrire sur github et donc mettre à jour son travail au fur-et-à-mesure.
@@ -83,7 +93,6 @@ Par exemple, `usethis::git_sitrep()` renvoie un warning expliquant que cette 1è
     [...]
     ! C:/Users/CLEM/Documents/.Renviron defines the environment variable: GITHUB_PAT
     ! This can prevent your PAT from being retrieved from the Git credential store.
-    ℹ If you are troubleshooting PAT problems, the root cause may be an old, invalid PAT defined in C:/Users/CLEM/Documents/.Renviron.
     ℹ For most use cases, it is better to NOT define the PAT in .Renviron.
     ☐ Call usethis::edit_r_environ() to edit that file.
     ☐ Then call gitcreds::gitcreds_set() to put the PAT into the Git credential store.
@@ -115,33 +124,40 @@ Et configurer un token ou github
 ## Configurer un projet
 
 ### Cloner ou créer un projet Git
+Il faut toujours créer un repo github ou qu'il y en ai un. Selon si le projet existe déjà localement ou non :
 
-- Soit on clône un repo GitHub existant (New Project > Version Control > Git)
+- Soit on clône un repo GitHub existant, pour créer un nouveau projet Rstudio (New Project > Version Control > Git). Il ne faut *pas* créer le projet dans une nouvelle session si Rstudio perd l'accès à internet en redémarrant (p. ex. si l'accès internet nécessite de régler un proxy d'entreprise).
 
-- Soit on configure Git sur un projet existant (Project Options > Git)
+- Soit on configure un projet existant, si le projet Rstudio est déjà créé localement (Project Options > Git => et on indique l'adresse du projet au niveau de 'Origin').
 
-En général :
+#### Projet déjà créé locament + repo Github déjà existant
+(p. ex. si le projet est sur un disque partagé)
 
-1. On veut dans tous les cas créer un repo sur Github pour l'associer à un projet Rstudio
+Selon la config' associée, il faut ouvrir le projet et faire :
+(Project Options > Git => et on indique l'adresse du projet au niveau de 'Origin')
 
-2. Et reporter dans Rstudio l'adresse https - ou l'adresse 'SSH' si une clée ssh est configurée - du projet, visible sur Github ou déductible en tant que 'nom-du-user/repo'.
+Ou bien lancer un peu de code R ou terminal pour faire la même chose.
 
-#### Initialiser un nouveau projet
-Le plus simple pour synchroniser un projet Rstudio et un repo github, c'est généralement d'indiquer l'adresse https (ou SSH) d'un nouveau repo vierge, à la création d'un nouveau projet Rstudio.
+#### Commencer un nouveau projet à partir de rien
+En général, **si le projet est nouveau** :
 
-Donc on commence par créer un repo sur Github.
+1. On veut commencer par créer un repo sur Github pour l'associer à un projet Rstudio
+
+2. Et reporter dans Rstudio l'adresse https du projet - ou l'adresse 'SSH' si ssh est configuré (sur le github du projet il y a un gros bouton vert `<> Code` qui déroule l'adresse HTTPS et SSH ; et 
+
+1. on commence par créer un repo sur Github. On laisse tout vide généralement.
+2. on va récupérer l'adresse (gros bouton vert `<> Code` propose l'adresse HTTPS et SSH). L'adresse HTTPS est aussi déductible comme 'nom-du-user/repo'.
+3. on veut indiquer cette adresse au niveau du projet sous Rstudio, via les menus Rstudio :
 
 > "Nouveau projet" ==> "Version control" ==> "Git"
 
-**Il faut indiquer l'adresse SSH (!) dans la "Repository url" et éventuellement un nom de projet (nom du dossier que Rstudio va créer) s'il est différent**.
+{et on reporte l'adresse https}
 
-> Il faut suivre ce flux de travail pour "récupérer" un projet pour la 1ere fois sur un nouveau poste, typiquement pour travailler sur plusieurs postes (au moment de la 1ère configuration du 2nd poste), s'insérer dans un travail collaboratif déjà en cours (récupérer le projet pour la 1ère fois), etc.
+#### Synchroniser un projet déjà créé localement
+Si le projet est déjà créé sur l'ordinateur mais que le repo github est vide, il faut initialiser l'archive git locale avec ce qu'on a et push cette première contribution via :
 
-#### Synchroniser
-Si le projet est déjà créé sur l'ordinateur mais que le repo github est vide, il faut initialiser l'archive avec :
-
-- en commandes terminal, 
-- via l'interface 'git' de Rstudio
+- des commandes terminal, 
+- l'interface 'git' de Rstudio
 - ou encore avec des fonctions de `usethis::`
 
 Ci-ensuite l'une des possibilités pour initialiser le projet.
