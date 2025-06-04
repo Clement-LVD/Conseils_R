@@ -214,6 +214,25 @@ git commit -m "Initial commit"
 etc.
 ]
 
+### Restaurer un fichier
+Parfois on introduit un bogue sans s'en rendre compte, et on réalise plein d'autres modifications ensuite.
+On veut donc généralement (a) copier le fichier trafiqué et (b) re-importer le fichier dans une version préalable aux modif'.
+
+Méthode 1. On peut voir directement sur github.com le fichier 'raw', remonter l'historique avec 'history' [et choisir un commit ou un autre] et copier à la mano...
+
+Méthode 2. On peut voir l'historique des commits dans un fichier précis avec une commande terminal :
+
+`git log -- <chemin_relatif/du/fichier>`
+
+p.ex. `git log -- 3_annule_remplace/corrections_anomalies_de_stock.R`
+
+Dès qu'on identifie le bon commit on peut restaurer le fichier dans une version identique à ce qu'il était au moment de ce commit
+
+`git checkout abc1234_numero_du_commit -- chemin_relatif/du/fichier`
+
+Et donc ça restaure le fichier [d'où la nécessité de le copier d'abord avec un nouveau nom] et on peut ensuite commit à nouveau
+`git add chemin/du/fichier`
+`git commit -m "Restauration de l'état de [fichier] avant bugs`
 
 ### Github action
 Le token doit souvent être passé directement au niveau d'une action Github. 
