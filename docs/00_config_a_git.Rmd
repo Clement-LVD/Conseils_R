@@ -228,7 +228,10 @@ p.ex. `git log -- 3_annule_remplace/corrections_anomalies_de_stock.R`
 
 Dès qu'on identifie le bon commit on peut restaurer le fichier dans une version identique à ce qu'il était au moment de ce commit
 
-`git checkout abc1234_numero_du_commit -- chemin_relatif/du/fichier`
+`git checkout abc1234_numero_du_commit -- chemin_relatif/du/fichier.R`
+
+et généralement on veut remonter au parent pour restauter la version AVANT le bug (en ajoutant la commande ^ après le hash du commit)
+git checkout abc1234_numero_du_commit^ -- chemin_relatif/du/fichier.R
 
 Et donc ça restaure le fichier [d'où la nécessité de le copier d'abord avec un nouveau nom] et on peut ensuite commit à nouveau
 `git add chemin/du/fichier`
